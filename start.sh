@@ -5,7 +5,7 @@ sudo apt update && \
 apt install -y docker.io openssh-server net-tools nmap && \
 snap install kubectl && \
 snap install minikube && \
-minikube start && \
+minikube start
 
 
 bash install_docker.sh
