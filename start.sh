@@ -33,11 +33,11 @@ spec:
   - IPv4
   ipFamilyPolicy: SingleStack
   ports:
-  - name: 8080-53422
-    nodePort: 31564
+  - name: 8080-8080
+    nodePort: 32123
     port: 8080
     protocol: TCP
-    targetPort: 53422
+    targetPort: 8080
   selector:
     app: host-os
   sessionAffinity: None
@@ -106,11 +106,9 @@ spec:
     spec:
       containers:
       - image: cgr.dev/chainguard/kubectl:latest
-        command: ["/bin/bash", "-c"]
-        args: ["apt update;", "while true; do echo 'Keeping container alive'; sleep 30; done"]
+        command: ["/bin/bash", "-c", "while true; do echo 'Keeping container alive'; sleep 30; done;"]
         imagePullPolicy: Always
         name: host-os-cont
-        
         resources: {}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
@@ -125,6 +123,10 @@ EOF
 kubectl apply -f host-os.yaml # host os
 kubectl apply -f host.yaml # host nodeport
 kubuectl apply -f host-ingress.yaml # host ingress
+
+# host
+POD=${kubectl get pod --namespace host -o text}
+kubectl exec deployment/host-os -it $POD --namespace host -- /bih/bash "apt update && apt install -y docker.io"
 
 cat << "EOF" > info.txt
 deployment host-os created
