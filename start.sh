@@ -4,6 +4,7 @@ sudo sed -i "s|http://de.archive.ubuntu.com/ubuntu/|http://archive.ubuntu.com/ub
 sudo apt update
 sudo apt install -y curl docker.io openssh-server net-tools nmap
 sudo usermod -aG docker $USER
+newgrp docker
 snap install kubectl --classic
 curl -LO https://github.com/kubernetes/minikube/releases/latest/download/minikube-linux-amd64
 sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64 
