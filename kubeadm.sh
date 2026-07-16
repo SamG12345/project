@@ -1,8 +1,8 @@
 #!/bin/sh
 
 sudo sed -i "s|http://de.archive.ubuntu.com/ubuntu/|http://archive.ubuntu.com/ubuntu/|" /etc/apt/sources.list
-sudo apt update -qq > /dev/null
-sudo apt install -y curl docker.io openssh-server net-tools nmap -qq > /dev/null
+sudo apt update > /dev/null
+sudo apt install -y curl docker.io openssh-server net-tools nmap > /dev/null
 sudo usermod -aG docker $USER
 newgrp docker
 
@@ -17,6 +17,19 @@ curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.36/deb/Release.key | sudo gpg --
 # This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.36/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
-sudo apt-get update -qq > /dev/null
-sudo apt-get install -y kubelet kubeadm kubectl -qq > /dev/null
-sudo apt-mark hold kubelet kubeadm kubectl -qq > /dev/null
+sudo apt-get update > /dev/null
+sudo apt-get install -y kubelet kubeadm kubectl > /dev/null
+sudo apt-mark hold kubelet kubeadm kubectl > /dev/null
+
+# --------helm--------
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4
+chmod 700 get_helm.sh
+./get_helm.sh
+# -------dashboard via helm-------
+helm repo add headlamp https://kubernetes-sigs.github.io/headlamp/
+helm repo update
+# -------install in the kube system-------
+helm install my-headlamp headlamp/headlamp --namespace kube-system
+# ---------p-f---------
+kubectl port-forward -n kube-system svc/my-headlamp 8080:80
+helm install my-headlamp headlamp/headlamp --namespace kube-system
