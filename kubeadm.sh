@@ -33,3 +33,9 @@ helm install my-headlamp headlamp/headlamp --namespace kube-system
 # ---------p-f---------
 kubectl port-forward -n kube-system svc/my-headlamp 8080:80
 helm install my-headlamp headlamp/headlamp --namespace kube-system
+
+# -------prometheus----------
+LATEST=$(curl -s https://api.github.com/repos/prometheus-operator/prometheus-operator/releases/latest | jq -cr .tag_name)
+kubectl apply -f https://github.com/prometheus-operator/prometheus-operator/releases/download/${LATEST}/bundle.yaml
+LATEST=$(curl -s https://github.com/prometheus/prometheus/tags | grep latest)
+kubectl apply -f https://github.com/prometheus-operator/prometheus-operator/releases/download/${LATEST}/bundle.yaml
